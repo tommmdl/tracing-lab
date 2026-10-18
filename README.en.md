@@ -83,6 +83,8 @@ It then queries the trace through Grafana and finds the same ID in Loki logs. Ex
 
 See [results and limits](docs/validation.en.md).
 
+**19 checks passed locally and in GitHub Actions.**
+
 ## Storage and limits
 
 Tempo v3.1.0 runs in monolithic mode with filesystem storage and a 2 GiB PVC. Collector v0.163.1 receives OTLP HTTP and forwards batches to Tempo. Official images are pinned by digest in `config/images.json`. Collector needs no Kubernetes API permissions.

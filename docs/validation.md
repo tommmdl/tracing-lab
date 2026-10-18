@@ -12,4 +12,4 @@ A pipeline cria um cluster novo, instala os projetos Kubernetes, monitoramento e
 
 Não foram testados retenção por 24 horas, perda de nó, recuperação de backup, fila durável do Collector, métricas geradas por spans ou carga. O teste não comprova mascaramento geral de dados, persistência de traces após substituir o Pod do Tempo nem entrega sem perdas em interrupções. Tempo usa um volume local e uma réplica.
 
-O resultado do GitHub Actions será registrado depois da primeira execução.
+As mesmas **19 verificações passaram no [GitHub Actions](https://github.com/tommmdl/tracing-lab/actions/runs/39128753855)**. Veja os [resultados do CI](../evidence/ci-results.json), a [revisão testada](../evidence/ci-run.json) e o [estado local no GitOps](../evidence/local-state.json). Os commits posteriores de documentação não alteram o código testado.

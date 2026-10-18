@@ -1,0 +1,12 @@
+{
+  "observed_at_utc": "2026-10-18T13:01:13Z",
+  "argocd": {
+    "path": "workloads/notes-traced",
+    "sync": "Synced",
+    "health": "Healthy"
+  },
+  "notes_api": {
+    "image": "tracing-lab-api:otel-5fc0da89b662d0b6",
+    "ready_replicas": 2
+  }
+}

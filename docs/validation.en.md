@@ -12,4 +12,4 @@ CI creates a fresh cluster, installs Kubernetes, monitoring and logging projects
 
 Retention over 24 hours, node loss, backup restore, durable Collector queues, span metrics and load were not tested. This does not establish universal data masking, trace persistence after Tempo Pod replacement or lossless delivery during interruptions. Tempo uses one local volume and one replica.
 
-The GitHub Actions result will be recorded after the first run.
+The same **19 checks passed in [GitHub Actions](https://github.com/tommmdl/tracing-lab/actions/runs/39128753855)**. See [CI results](../evidence/ci-results.json), [tested revision](../evidence/ci-run.json) and [local GitOps state](../evidence/local-state.json). Later documentation commits do not change tested code.

@@ -83,6 +83,8 @@ Depois consulta o trace pelo Grafana e encontra o mesmo ID nos logs do Loki. O d
 
 Veja os [resultados e limites](docs/validation.md).
 
+**19 verificações passaram localmente e no GitHub Actions.**
+
 ## Como os dados ficam guardados
 
 Tempo v3.1.0 roda em modo monolítico, com filesystem e PVC de 2 GiB. O Collector v0.163.1 recebe OTLP HTTP e encaminha lotes ao Tempo. As imagens oficiais estão fixadas por digest em `config/images.json`. O Collector não precisa de permissões na API do Kubernetes.
