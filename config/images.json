@@ -1,0 +1,10 @@
+{
+  "tempo": {
+    "tag": "grafana/tempo:3.1.0",
+    "pinned": "grafana/tempo@sha256:3076b8dcdfb32fd6bc5ccef85e7b7313e6199b9cb84366257fc17ecb696db5fd"
+  },
+  "collector": {
+    "tag": "otel/opentelemetry-collector-contrib:0.163.1",
+    "pinned": "otel/opentelemetry-collector-contrib@sha256:1175b03003053962012f5a231f5567f66a3e8fdb960c7835c0e48f7aa1555806"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "trace_id": "97c6c870c4444195bae600309ef39018",
+  "spans": [
+    {
+      "name": "SELECT",
+      "kind": "SPAN_KIND_CLIENT",
+      "traceId": "l8bIcMREQZW65gAwnvOQGA==",
+      "spanId": "hrUfmDXX3x4=",
+      "parentSpanId": "rJgQp6cK7Bo=",
+      "startTimeUnixNano": "1792327480276061965",
+      "endTimeUnixNano": "1792327480277909965"
+    },
+    {
+      "name": "GET /notes",
+      "kind": "SPAN_KIND_SERVER",
+      "traceId": "l8bIcMREQZW65gAwnvOQGA==",
+      "spanId": "rJgQp6cK7Bo=",
+      "parentSpanId": "ASNFZ4mrze8=",
+      "startTimeUnixNano": "1792327480261953264",
+      "endTimeUnixNano": "1792327480278731565"
+    }
+  ]
+}

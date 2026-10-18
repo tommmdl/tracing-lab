@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: notes
+  namespace: argocd
+spec:
+  project: notes
+  source:
+    repoURL: https://github.com/tommmdl/argocd-lab.git
+    targetRevision: main
+    path: workloads/notes
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: notes-lab
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: false

@@ -1,0 +1,5 @@
+{
+  "image": "tracing-lab-api:otel-5fc0da89b662d0b6",
+  "source_sha256": "5fc0da89b662d0b62214fb8f2ed92be8d15b7c6a24340d1c87e51ec3c68d24ff",
+  "base_image": "ghcr.io/tommmdl/docker-lab@sha256:d8fdaffb99e0ac514b9e031ac9204b89fc2702112d198d1bebedd9d351fd19f0"
+}

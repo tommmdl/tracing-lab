@@ -1,0 +1,90 @@
+name: Testa os traces da aplicação no Kubernetes
+on:
+  push:
+    branches: [main]
+    paths: ['config/**', 'instrumentation/**', 'application/**', 'grafana/**', 'manifests/**', 'scripts/**', 'tests/**', 'kustomization.yaml', '.github/workflows/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tracing:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          path: tracing-lab
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: tommmdl/kubernetes-lab
+          ref: 437b3eb97568430dd5d5ebbac64d258a570c999c
+          path: kubernetes-lab
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: tommmdl/monitoring-lab
+          ref: 567a7f8e5eff7fd2532ae3ef4fb9ab93b6ecd0fb
+          path: monitoring-lab
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: tommmdl/logging-lab
+          ref: cc748eca77223d5494011fbf7f2ef605ee90bbee
+          path: logging-lab
+          persist-credentials: false
+      - name: Prepara o cluster e a aplicação
+        working-directory: kubernetes-lab
+        run: |
+          bash scripts/prepare.sh
+          bash scripts/lab.sh up
+      - name: Sobe o Grafana compartilhado
+        working-directory: monitoring-lab
+        run: bash scripts/lab.sh up
+      - name: Sobe Loki e a coleta de logs
+        working-directory: logging-lab
+        run: bash scripts/lab.sh up
+      - name: Constrói e carrega a aplicação instrumentada
+        working-directory: tracing-lab
+        run: bash scripts/build.sh
+      - name: Sobe Tempo e Collector
+        working-directory: tracing-lab
+        run: bash scripts/lab.sh up
+      - name: Aplica instrumentação no cluster descartável sem Argo CD
+        working-directory: tracing-lab
+        run: bash scripts/app.sh
+      - name: Testa propagação, spans de banco, Grafana e correlação
+        working-directory: tracing-lab
+        run: python3 tests/verify.py
+      - name: Guarda o diagnóstico
+        if: always()
+        working-directory: tracing-lab
+        run: |
+          mkdir -p .local
+          {
+            bash scripts/k.sh get pods,pvc
+            bash scripts/k.sh get events --sort-by=.metadata.creationTimestamp
+            for name in tempo collector; do
+              bash scripts/k.sh logs "deployment/$name" --tail=30
+            done
+          } > .local/diagnostics.log 2>&1 || true
+      - name: Publica o resultado
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: tracing-results
+          path: |
+            tracing-lab/.local/verification.json
+            tracing-lab/.local/diagnostics.log
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Remove o cluster do runner
+        if: always()
+        working-directory: kubernetes-lab
+        run: |
+          if [ -f .local/cluster-owned ]; then
+            bash scripts/lab.sh down
+          fi

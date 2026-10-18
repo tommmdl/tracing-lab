@@ -1,0 +1,45 @@
+{
+  "executed_at_utc": "2026-10-18T12:44:46Z",
+  "checks_passed": 19,
+  "checks": [
+    "Existing notes endpoint still returns 200",
+    "W3C traceparent is preserved in response trace ID",
+    "Tempo stores the Flask server span",
+    "Server span keeps the caller parent span ID",
+    "Database client spans are present",
+    "Database span is a child of the server span",
+    "Service resource identifies the API",
+    "Trace contains a SELECT operation",
+    "Instrumented app still creates notes",
+    "Note title is not copied into trace data",
+    "Only the test note is removed",
+    "Unknown route remains an expected 404",
+    "HTTP 404 is visible in span attributes",
+    "Tempo datasource passes Grafana health check",
+    "Grafana returns trace frames",
+    "Same trace ID appears in centralized application logs",
+    "Existing datasource prometheus remains healthy",
+    "Existing datasource logging-loki remains healthy",
+    "Tempo traces-to-logs points to the existing Loki datasource"
+  ],
+  "trace_id": "97c6c870c4444195bae600309ef39018",
+  "span_count": 2,
+  "database_span_count": 1,
+  "app_image": {
+    "image": "tracing-lab-api:otel-5fc0da89b662d0b6",
+    "source_sha256": "5fc0da89b662d0b62214fb8f2ed92be8d15b7c6a24340d1c87e51ec3c68d24ff",
+    "base_image": "ghcr.io/tommmdl/docker-lab@sha256:d8fdaffb99e0ac514b9e031ac9204b89fc2702112d198d1bebedd9d351fd19f0"
+  },
+  "versions": {
+    "tempo": {
+      "tag": "grafana/tempo:3.1.0",
+      "pinned": "grafana/tempo@sha256:3076b8dcdfb32fd6bc5ccef85e7b7313e6199b9cb84366257fc17ecb696db5fd"
+    },
+    "collector": {
+      "tag": "otel/opentelemetry-collector-contrib:0.163.1",
+      "pinned": "otel/opentelemetry-collector-contrib@sha256:1175b03003053962012f5a231f5567f66a3e8fdb960c7835c0e48f7aa1555806"
+    }
+  },
+  "scope": "Actual instrumented Flask/Psycopg requests over OTLP HTTP through Collector to Tempo; Grafana query and Loki correlation; not a synthetic OTLP push",
+  "final_state": "API available; test note deleted; Tempo and Collector running; existing datasources preserved"
+}

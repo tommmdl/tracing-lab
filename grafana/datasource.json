@@ -1,0 +1,28 @@
+{
+  "name": "Notes Tempo",
+  "uid": "tracing-tempo",
+  "type": "tempo",
+  "access": "proxy",
+  "url": "http://tempo.tracing-lab.svc.cluster.local:3200",
+  "isDefault": false,
+  "editable": false,
+  "jsonData": {
+    "tracesToLogsV2": {
+      "datasourceUid": "logging-loki",
+      "spanStartTimeShift": "-1m",
+      "spanEndTimeShift": "1m",
+      "tags": [
+        {
+          "key": "service.name",
+          "value": "app"
+        },
+        {
+          "key": "service.namespace",
+          "value": "namespace"
+        }
+      ],
+      "filterByTraceID": true,
+      "filterBySpanID": false
+    }
+  }
+}

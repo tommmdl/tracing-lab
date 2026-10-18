@@ -1,0 +1,18 @@
+spec:
+  template:
+    spec:
+      containers:
+      - name: api
+        image: tracing-lab-api:otel-5fc0da89b662d0b6
+        imagePullPolicy: Never
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: notes-api
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: service.namespace=notes-lab,deployment.environment.name=lab
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: http://collector.tracing-lab.svc.cluster.local:4318
+        - name: OTEL_EXPORTER_OTLP_PROTOCOL
+          value: http/protobuf
+        - name: OTEL_TRACES_SAMPLER
+          value: parentbased_always_on
