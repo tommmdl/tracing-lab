@@ -112,3 +112,5 @@ Setup and verification were carried out with assistant help. References: [Python
 The runtime image now inherits the API security fixes. OpenTelemetry dependencies are installed in a separate build stage and copied into the final image, which keeps no pip or ensurepip. Flask is pinned to 3.1.3 here too. See the [complete remediation reports](https://github.com/tommmdl/security-lab/blob/main/docs/remediation.en.md); remaining vulnerabilities are still reported and blocked by the security policy.
 
 Remediation validation: 23 Compose checks, a controlled restore of three notes from the original PostgreSQL image into the rebuilt image, and 19 local tracing checks. The running Argo CD application is Synced/Healthy and retains the same PVC. Full evidence and remaining issues are linked above.
+
+The corrected images also passed [all 19 tracing checks in CI](https://github.com/tommmdl/tracing-lab/actions/runs/39174296321); see `evidence/remediation-ci-tests.json`.
