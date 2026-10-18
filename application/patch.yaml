@@ -3,7 +3,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: tracing-lab-api:otel-5fc0da89b662d0b6
+        image: tracing-lab-api:otel-c5d4e188167922bd
         imagePullPolicy: Never
         env:
         - name: OTEL_SERVICE_NAME

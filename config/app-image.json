@@ -1,5 +1,5 @@
 {
-  "image": "tracing-lab-api:otel-5fc0da89b662d0b6",
-  "source_sha256": "5fc0da89b662d0b62214fb8f2ed92be8d15b7c6a24340d1c87e51ec3c68d24ff",
-  "base_image": "ghcr.io/tommmdl/docker-lab@sha256:d8fdaffb99e0ac514b9e031ac9204b89fc2702112d198d1bebedd9d351fd19f0"
+  "image": "tracing-lab-api:otel-c5d4e188167922bd",
+  "source_sha256": "c5d4e188167922bdbe9e94dbe95c2dcb710a1755438547f9c04e3fb815cf37ee",
+  "base_image": "ghcr.io/tommmdl/docker-lab@sha256:343f2b23294c09bea9c3250a3b3fd1f95d817acea9db0231dfaaaf406f22fbac"
 }

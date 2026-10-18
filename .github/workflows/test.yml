@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: tommmdl/kubernetes-lab
-          ref: 437b3eb97568430dd5d5ebbac64d258a570c999c
+          ref: 9aae41b8b9808c01bef607097319dde12b642f96
           path: kubernetes-lab
           persist-credentials: false
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6

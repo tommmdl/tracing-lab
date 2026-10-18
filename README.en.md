@@ -108,3 +108,5 @@ bash scripts/lab.sh down
 The script refuses removal while the app uses the instrumented image. It removes only Notes Tempo and namespace tracing-lab, deleting its volume and traces. Grafana, Loki, Prometheus and application data remain in their own namespaces. `.local/` stays outside Git.
 
 Setup and verification were carried out with assistant help. References: [Python instrumentation](https://opentelemetry.io/docs/languages/python/instrumentation/), [Psycopg instrumentation](https://opentelemetry-python-contrib.readthedocs.io/en/latest/instrumentation/psycopg/psycopg.html) and [monolithic Tempo](https://grafana.com/docs/tempo/latest/set-up-for-tracing/setup-tempo/deploy/locally/linux/).
+
+The runtime image now inherits the API security fixes. OpenTelemetry dependencies are installed in a separate build stage and copied into the final image, which keeps no pip or ensurepip. Flask is pinned to 3.1.3 here too. See the [complete remediation reports](https://github.com/tommmdl/security-lab/blob/main/docs/remediation.en.md); remaining vulnerabilities are still reported and blocked by the security policy.
