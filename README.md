@@ -116,3 +116,5 @@ Validação das correções: 23 testes do Compose, restauração controlada de t
 As imagens corrigidas também passaram pelos [19 testes de tracing no CI](https://github.com/tommmdl/tracing-lab/actions/runs/39174296321); veja `evidence/remediation-ci-tests.json`.
 
 Depois da análise dos críticos do PostgreSQL, a API usa uma conta SQL comum e a imagem do banco fica sem SQLite. A aplicação está saudável; passaram 24 testes de Kubernetes e 19 de tracing no CI. A [análise completa](https://github.com/tommmdl/security-lab/blob/main/docs/postgresql-critical.md) mantém os dois críticos restantes e seus limites visíveis.
+
+O [ensaio da API Alpine](https://github.com/tommmdl/security-lab/blob/main/docs/api-alpine.md) testa as imagens básica e instrumentada com scans completos, aplicação e tracing real por Collector/Tempo/Grafana/Loki. Usa workloads e bancos separados; os pins da API principal continuam iguais.

@@ -17,11 +17,13 @@ command=sys.argv[1] if len(sys.argv)>1 else 'status'
 if command in ['up','down']:
  for kind,name in [('deployment','notes-api-alpine'),('statefulset','api-alpine-db'),('service','notes-api-alpine'),('service','api-alpine-db')]:owned(kind,name)
 if command=='up':
- k('get','secret','notes-db');image=os.environ.get('API_ALPINE_OTEL_IMAGE','docker-lab-api-alpine-otel:local')
+ k('get','secret','notes-db');config=ROOT/'config/api-alpine.json';default_image=json.loads(config.read_text())['traced_image'] if config.exists() else 'docker-lab-api-alpine-otel:local';image=os.environ.get('API_ALPINE_OTEL_IMAGE',default_image)
  db=next(d for d in documents(APP/'manifests/postgres.yaml') if d['kind']=='StatefulSet' and d['metadata']['name']=='postgres-alpine')
  db['metadata']['name']='api-alpine-db';db['spec']['serviceName']='api-alpine-db';db['spec']['selector']['matchLabels']={'app':'api-alpine-db'};db['spec']['template']['metadata']['labels']={'app':'api-alpine-db'}
  api=next(d for d in documents(APP/'manifests/api.yaml') if d['kind']=='Deployment');api['metadata']['name']='notes-api-alpine';api['spec']['replicas']=1;api['spec']['selector']['matchLabels']={'app':'notes-api-alpine'};api['spec']['template']['metadata']['labels']={'app':'notes-api-alpine'}
  container=api['spec']['template']['spec']['containers'][0];container['image']=image;container['imagePullPolicy']='IfNotPresent' if '@sha256:' in image else 'Never';container['env']=[{'name':n,'value':v} for n,v in [('DB_HOST','api-alpine-db'),('OTEL_SERVICE_NAME','notes-api-alpine'),('OTEL_RESOURCE_ATTRIBUTES','service.namespace=notes-lab,deployment.environment.name=alpine-test'),('OTEL_EXPORTER_OTLP_ENDPOINT','http://collector.tracing-lab.svc.cluster.local:4318'),('OTEL_EXPORTER_OTLP_PROTOCOL','http/protobuf')]]
+ wait_code="import time\nfrom database import connect\nfor attempt in range(120):\n try:\n  with connect() as c:c.execute('SELECT 1')\n  break\n except Exception:time.sleep(1)\nelse:raise SystemExit('Database readiness timeout')"
+ api['spec']['template']['spec']['initContainers']=[{'name':'wait-database','image':image,'imagePullPolicy':container['imagePullPolicy'],'command':['python','-c',wait_code],'env':container['env'],'envFrom':container['envFrom'],'volumeMounts':container['volumeMounts'],'securityContext':container['securityContext'],'resources':{'requests':{'cpu':'50m','memory':'64Mi'},'limits':{'cpu':'1','memory':'256Mi'}}}]
  def service(name,label,port,target,headless=False):
   spec={'selector':{'app':label},'ports':[{'port':port,'targetPort':target}]}
   if headless:spec['clusterIP']='None'

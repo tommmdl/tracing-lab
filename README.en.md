@@ -116,3 +116,5 @@ Remediation validation: 23 Compose checks, a controlled restore of three notes f
 The corrected images also passed [all 19 tracing checks in CI](https://github.com/tommmdl/tracing-lab/actions/runs/39174296321); see `evidence/remediation-ci-tests.json`.
 
 After the PostgreSQL critical review, the API uses an ordinary SQL role and the database image no longer includes SQLite. The application remains healthy; 24 Kubernetes and 19 tracing checks passed in CI. The [full review](https://github.com/tommmdl/security-lab/blob/main/docs/postgresql-critical.en.md) keeps both remaining critical findings and their limits visible.
+
+The [Alpine API experiment](https://github.com/tommmdl/security-lab/blob/main/docs/api-alpine.en.md) tests both basic and instrumented images with full scans, application checks and real Collector/Tempo/Grafana/Loki tracing. It uses separate workloads and databases; main API image pins remain unchanged.
