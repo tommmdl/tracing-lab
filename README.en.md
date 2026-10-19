@@ -114,3 +114,5 @@ The runtime image now inherits the API security fixes. OpenTelemetry dependencie
 Remediation validation: 23 Compose checks, a controlled restore of three notes from the original PostgreSQL image into the rebuilt image, and 19 local tracing checks. The running Argo CD application is Synced/Healthy and retains the same PVC. Full evidence and remaining issues are linked above.
 
 The corrected images also passed [all 19 tracing checks in CI](https://github.com/tommmdl/tracing-lab/actions/runs/39174296321); see `evidence/remediation-ci-tests.json`.
+
+After the PostgreSQL critical review, the API uses an ordinary SQL role and the database image no longer includes SQLite. The application remains healthy; 24 Kubernetes and 19 tracing checks passed in CI. The [full review](https://github.com/tommmdl/security-lab/blob/main/docs/postgresql-critical.en.md) keeps both remaining critical findings and their limits visible.
