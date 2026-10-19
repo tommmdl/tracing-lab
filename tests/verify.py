@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Follow real requests through Flask, Psycopg, Collector, Tempo and Grafana."""
-import base64,json,sys,time,urllib.error,urllib.parse,urllib.request,uuid
+import base64,json,os,sys,time,urllib.error,urllib.parse,urllib.request,uuid
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 from client import ROOT,api,forward,k,obj,password,wait
@@ -27,7 +27,11 @@ def trace(base,identifier):
     except urllib.error.HTTPError as error:
         if error.code==404:return {}
         raise
-with forward('notes-lab','notes-api',80) as app,forward('tracing-lab','tempo',3200) as tempo,forward('monitoring-lab','grafana',3000) as grafana,forward('logging-lab','loki',3100) as loki:
+namespace=os.environ.get('TRACING_API_NAMESPACE','notes-lab')
+api_service=os.environ.get('TRACING_API_SERVICE','notes-api')
+service_name=os.environ.get('TRACING_SERVICE_NAME','notes-api')
+log_app=os.environ.get('TRACING_LOG_APP','notes-api')
+with forward(namespace,api_service,80) as app,forward('tracing-lab','tempo',3200) as tempo,forward('monitoring-lab','grafana',3000) as grafana,forward('logging-lab','loki',3100) as loki:
     wait(lambda:api(tempo,'/ready'))
     headers={'traceparent':f'00-{trace_id}-{parent}-01'}
     with urllib.request.urlopen(urllib.request.Request(app+'/notes',headers=headers),timeout=15) as response:
@@ -40,7 +44,7 @@ with forward('notes-lab','notes-api',80) as app,forward('tracing-lab','tempo',32
     check('Server span keeps the caller parent span ID',hexid(server[0]['parentSpanId'])==parent)
     check('Database client spans are present',bool(dbspans(result)))
     check('Database span is a child of the server span',any(hexid(s.get('parentSpanId',''))==hexid(server[0]['spanId']) for s in dbspans(result)))
-    check('Service resource identifies the API',any(attrs(b.get('resource',{}).get('attributes',[])).get('service.name')=='notes-api' for b in batches(result)))
+    check('Service resource identifies the API',any(attrs(b.get('resource',{}).get('attributes',[])).get('service.name')==service_name for b in batches(result)))
     check('Trace contains a SELECT operation',any('SELECT' in str(attrs(s.get('attributes',[]))) for s in dbspans(result)))
     # Create/delete only our own record; titles must not be copied into trace attributes.
     secret_title='tracing-test-'+uuid.uuid4().hex
@@ -66,7 +70,7 @@ with forward('notes-lab','notes-api',80) as app,forward('tracing-lab','tempo',32
     response=api(grafana,'/api/ds/query','POST',{'from':str(now-900000),'to':str(now),'queries':[{'refId':'A','datasource':{'type':'tempo','uid':'tracing-tempo'},'queryType':'traceId','query':trace_id}]},auth)['results']['A']
     check('Grafana returns trace frames',not response.get('error') and bool(response.get('frames')))
     # Verify correlation using the labels configured for Tempo traces-to-logs.
-    logql='{namespace="notes-lab",app="notes-api"} |= "'+trace_id+'"'
+    logql='{namespace="'+namespace+'",app="'+log_app+'"} |= "'+trace_id+'"'
     def correlated():
         params=urllib.parse.urlencode({'query':logql,'start':str(time.time_ns()-900_000_000_000),'end':str(time.time_ns()),'limit':100})
         return api(loki,'/loki/api/v1/query_range?'+params)['data']['result']
@@ -76,7 +80,8 @@ with forward('notes-lab','notes-api',80) as app,forward('tracing-lab','tempo',32
         check('Existing datasource '+uid+' remains healthy',api(grafana,'/api/datasources/uid/'+uid+'/health',auth=auth)['status']=='OK')
     source=api(grafana,'/api/datasources/uid/tracing-tempo',auth=auth)
     check('Tempo traces-to-logs points to the existing Loki datasource',source['jsonData']['tracesToLogsV2']['datasourceUid']=='logging-loki')
-(ROOT/'.local/trace-sample.json').write_text(json.dumps(result,indent=2)+'\n')
-output={'executed_at_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'checks_passed':len(checks),'checks':checks,'trace_id':trace_id,'span_count':len(spans(result)),'database_span_count':len(dbspans(result)),'app_image':json.loads((ROOT/'config/app-image.json').read_text()),'versions':json.loads((ROOT/'config/images.json').read_text()),'scope':'Actual instrumented Flask/Psycopg requests over OTLP HTTP through Collector to Tempo; Grafana query and Loki correlation; not a synthetic OTLP push','final_state':'API available; test note deleted; Tempo and Collector running; existing datasources preserved'}
-(ROOT/'.local/verification.json').write_text(json.dumps(output,indent=2)+'\n')
+output_dir=Path(os.environ.get('TRACING_EVIDENCE_DIR',str(ROOT/'.local')));output_dir.mkdir(parents=True,exist_ok=True)
+(output_dir/'trace-sample.json').write_text(json.dumps(result,indent=2)+'\n')
+output={'executed_at_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'checks_passed':len(checks),'checks':checks,'trace_id':trace_id,'span_count':len(spans(result)),'database_span_count':len(dbspans(result)),'app_image':({'image':os.environ['TRACING_APP_IMAGE']} if os.environ.get('TRACING_APP_IMAGE') else json.loads((ROOT/'config/app-image.json').read_text())),'versions':json.loads((ROOT/'config/images.json').read_text()),'scope':'Actual instrumented Flask/Psycopg requests over OTLP HTTP through Collector to Tempo; Grafana query and Loki correlation; not a synthetic OTLP push','final_state':'API available; test note deleted; Tempo and Collector running; existing datasources preserved'}
+(output_dir/'verification.json').write_text(json.dumps(output,indent=2)+'\n')
 print(json.dumps(output,indent=2))
