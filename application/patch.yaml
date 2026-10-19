@@ -3,8 +3,8 @@ spec:
     spec:
       containers:
       - name: api
-        image: tracing-lab-api:otel-c5d4e188167922bd
-        imagePullPolicy: Never
+        image: ghcr.io/tommmdl/docker-lab@sha256:e01c467c0987cc2d999778a4e9ee429bee1d6af4bcdef80e38ce620b95a0b8da
+        imagePullPolicy: IfNotPresent
         env:
         - name: OTEL_SERVICE_NAME
           value: notes-api

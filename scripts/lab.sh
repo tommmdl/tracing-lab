@@ -12,10 +12,17 @@ case "${1:-status}" in
   status) bash scripts/k.sh get deploy,pods,svc,pvc ;;
   down)
     # Restore the app through Git first: never leave it exporting to a removed endpoint.
-    image=$(bash scripts/k.sh -n notes-lab get deploy notes-api -o jsonpath='{.spec.template.spec.containers[0].image}')
-    if [[ "$image" == tracing-lab-api:* ]]; then
-      echo 'Restore the application through argocd-lab before deleting tracing-lab.' >&2; exit 1
-    fi
+    python3 - <<'PYGUARD'
+import json,subprocess
+items=json.loads(subprocess.check_output(['bash','scripts/k.sh','-n','notes-lab','get','deployments','-o','json']))['items']
+active=[]
+for d in items:
+    if d['spec'].get('replicas',1)==0:continue
+    for c in d['spec']['template']['spec']['containers']:
+        if any(e.get('name')=='OTEL_EXPORTER_OTLP_ENDPOINT' and 'collector.tracing-lab' in e.get('value','') for e in c.get('env',[])):
+            active.append(d['metadata']['name'])
+if active:raise SystemExit('Restore/stop these traced workloads before removing tracing-lab: '+', '.join(active))
+PYGUARD
     python3 scripts/grafana.py remove
     bash scripts/k.sh delete namespace tracing-lab --ignore-not-found
     ;;

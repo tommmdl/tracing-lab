@@ -3,6 +3,13 @@ set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 image=$(python3 -c 'import json; print(json.load(open("config/app-image.json"))["image"])')
 python3 scripts/image.py check
+if [[ "${1:-}" != --local ]]; then
+  docker pull "$image"
+  echo 'Published tracing image ready; the Pod uses this digest with IfNotPresent.'
+  exit 0
+fi
+image=$(python3 -c 'import json; print(json.load(open("config/app-image.json"))["local_build_image"])')
+python3 scripts/image.py check
 mkdir -p .local/docker/cli-plugins
 if ! docker buildx version >/dev/null 2>&1; then
   python3 - <<'PY'

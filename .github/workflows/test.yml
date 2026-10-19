@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: tommmdl/kubernetes-lab
-          ref: 1f535dcb3116f4a0b22875675d87742c1240ac19
+          ref: 37a675a891dbdbce96c26646f2c4ae6ecfe4a3a9
           path: kubernetes-lab
           persist-credentials: false
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -46,7 +46,7 @@ jobs:
       - name: Sobe Loki e a coleta de logs
         working-directory: logging-lab
         run: bash scripts/lab.sh up
-      - name: Constrói e carrega a aplicação instrumentada
+      - name: Prepara a imagem instrumentada publicada
         working-directory: tracing-lab
         run: bash scripts/build.sh
       - name: Sobe Tempo e Collector

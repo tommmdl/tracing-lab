@@ -1,5 +1,8 @@
 {
-  "image": "tracing-lab-api:otel-c5d4e188167922bd",
-  "source_sha256": "c5d4e188167922bdbe9e94dbe95c2dcb710a1755438547f9c04e3fb815cf37ee",
-  "base_image": "ghcr.io/tommmdl/docker-lab@sha256:343f2b23294c09bea9c3250a3b3fd1f95d817acea9db0231dfaaaf406f22fbac"
+  "image": "ghcr.io/tommmdl/docker-lab@sha256:e01c467c0987cc2d999778a4e9ee429bee1d6af4bcdef80e38ce620b95a0b8da",
+  "base_image": "ghcr.io/tommmdl/docker-lab@sha256:ae2e93fdbab7bc912897e6524b3e17b982e97cfb29bcb4fc36d9c014d615eb91",
+  "local_build_image": "tracing-lab-api:otel-alpine-65ac3af173d95888",
+  "build_source_sha256": "65ac3af173d9588823427901b6f435afaec943cc1c0059a04561b94c9b251420",
+  "publication_workflow": "https://github.com/tommmdl/github-actions-lab/actions/runs/39260441607",
+  "scope": "Published digests are release identities; build_source_sha256 fingerprints local build inputs, not a claim that a rebuild is byte-identical to the release."
 }

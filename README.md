@@ -16,6 +16,10 @@ flowchart LR
   G --> L[Loki: mesmo trace_id]
 ```
 
+## API atual: Alpine, incluindo OpenTelemetry
+
+Os labs principais agora usam os digests Alpine publicados: API básica no Docker/Kubernetes básico e instrumentada no workload GitOps de tracing. Restauramos backups em separado e o rollback real de imagem preservou notas criadas depois da troca. Imagens, credenciais e volumes dos bancos continuam os mesmos. [Adoção, rollback testado e evidências completas](https://github.com/tommmdl/security-lab/blob/main/docs/api-adoption.md). Os achados Debian guardados continuam visíveis.
+
 ## Preparar o ambiente
 
 Clone este projeto ao lado de [kubernetes-lab](https://github.com/tommmdl/kubernetes-lab), [monitoring-lab](https://github.com/tommmdl/monitoring-lab) e [logging-lab](https://github.com/tommmdl/logging-lab). Use Linux x86_64 ou WSL, Docker, Git, Bash e Python 3, com acesso à internet.
