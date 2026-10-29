@@ -3,7 +3,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: ghcr.io/tommmdl/docker-lab@sha256:e01c467c0987cc2d999778a4e9ee429bee1d6af4bcdef80e38ce620b95a0b8da
+        image: ghcr.io/tommmdl/docker-lab@sha256:853f73da8162b912275458bd46073ebb74c63f8b52e2545946acb0c50e804d31
         imagePullPolicy: IfNotPresent
         env:
         - name: OTEL_SERVICE_NAME

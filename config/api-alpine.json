@@ -1,6 +1,6 @@
 {
   "basic_image": "ghcr.io/tommmdl/docker-lab@sha256:ae2e93fdbab7bc912897e6524b3e17b982e97cfb29bcb4fc36d9c014d615eb91",
-  "traced_image": "ghcr.io/tommmdl/docker-lab@sha256:e01c467c0987cc2d999778a4e9ee429bee1d6af4bcdef80e38ce620b95a0b8da",
-  "publication_workflow": "https://github.com/tommmdl/github-actions-lab/actions/runs/39260441607",
+  "traced_image": "ghcr.io/tommmdl/docker-lab@sha256:853f73da8162b912275458bd46073ebb74c63f8b52e2545946acb0c50e804d31",
+  "publication_workflow": "https://github.com/tommmdl/github-actions-lab/actions/runs/40938591556",
   "status": "Adopted: main Docker basic API and Kubernetes basic/OpenTelemetry API"
 }
